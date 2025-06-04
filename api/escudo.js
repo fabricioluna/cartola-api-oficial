@@ -1,3 +1,4 @@
+
 import got from 'got';
 
 export default async function handler(req, res) {
