@@ -1,14 +1,15 @@
 import got from 'got';
 
 export default async function handler(req, res) {
-  const { url } = req.query;
+  const rawQuery = req.url.split('?')[1];
+  const escudoUrl = new URLSearchParams(rawQuery).get('url');
 
-  if (!url || !url.startsWith("https://")) {
+  if (!escudoUrl || !escudoUrl.startsWith("https://")) {
     return res.status(400).json({ error: "URL inválida" });
   }
 
   try {
-    const stream = got.stream(url);
+    const stream = got.stream(escudoUrl);
     stream.on('response', (response) => {
       res.setHeader("Content-Type", response.headers['content-type'] || 'image/svg+xml');
       res.setHeader("Access-Control-Allow-Origin", "*");
