@@ -1,3 +1,4 @@
+
 import got from 'got';
 
 export default async function handler(req, res) {
@@ -15,11 +16,11 @@ export default async function handler(req, res) {
       res.setHeader("Access-Control-Allow-Origin", "*");
       stream.pipe(res);
     });
+
     stream.on('error', (err) => {
       console.error("Erro no stream:", err.message);
       res.status(502).json({ error: "Erro ao buscar escudo" });
     });
-
   } catch (err) {
     console.error("Erro inesperado:", err.message);
     res.status(500).json({ error: "Erro inesperado" });
