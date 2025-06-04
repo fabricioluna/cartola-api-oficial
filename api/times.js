@@ -20,6 +20,7 @@ export default async function handler(req, res) {
         nome: data.time.nome,
         nome_cartola: data.time.nome_cartola,
         escudo_url: data.time.escudo_url_svg || data.time.escudo_url,
+        escudo_url_svg: data.time.escudo_url_svg,
         pontos: data.pontos,
         patrimonio: data.patrimonio
       });
