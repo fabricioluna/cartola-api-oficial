@@ -1,3 +1,4 @@
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
 
@@ -15,10 +16,10 @@ export default async function handler(req, res) {
       const response = await fetch(`https://api.cartola.globo.com/time/id/${id}`);
       const data = await response.json();
       resultados.push({
-        id: data.time_id,
-        nome: data.nome,
-        nome_cartola: data.nome_cartola,
-        escudo_url: data.escudo_url,
+        id: data.time.time_id,
+        nome: data.time.nome,
+        nome_cartola: data.time.nome_cartola,
+        escudo_url: data.time.escudo_url_svg || data.time.escudo_url,
         pontos: data.pontos,
         patrimonio: data.patrimonio
       });
