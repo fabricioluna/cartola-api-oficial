@@ -2,8 +2,8 @@ import got from 'got';
 
 export default async function handler(req, res) {
   try {
-    const rawQuery = req.url.split('?')[1];
-    const escudoUrl = new URLSearchParams(rawQuery).get('url');
+    const fullUrl = new URL(req.url, `http://${req.headers.host}`);
+    const escudoUrl = fullUrl.searchParams.get('url');
 
     if (!escudoUrl || !escudoUrl.startsWith("https://")) {
       return res.status(400).json({ error: "URL inválida" });
