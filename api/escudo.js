@@ -1,4 +1,6 @@
 
+import got from 'got';
+
 export default async function handler(req, res) {
   const { url } = req.query;
 
@@ -7,14 +9,14 @@ export default async function handler(req, res) {
   }
 
   try {
-    const response = await fetch(url);
-    const contentType = response.headers.get("content-type");
-    const buffer = await response.arrayBuffer();
-
-    res.setHeader("Content-Type", contentType);
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.send(Buffer.from(buffer));
-  } catch (e) {
-    res.status(500).json({ error: "Erro ao buscar escudo" });
+    const stream = got.stream(url);
+    stream.on('response', (response) => {
+      res.setHeader("Content-Type", response.headers['content-type']);
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      stream.pipe(res);
+    });
+    stream.on('error', () => res.status(500).json({ error: "Erro ao buscar escudo" }));
+  } catch {
+    res.status(500).json({ error: "Erro inesperado" });
   }
 }
