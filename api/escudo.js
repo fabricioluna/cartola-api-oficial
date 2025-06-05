@@ -1,28 +1,17 @@
-
-import got from 'got';
-
 export default async function handler(req, res) {
+  const { url } = req.query;
+  if (!url) {
+    return res.status(400).json({ error: 'Parâmetro "url" ausente.' });
+  }
+
   try {
-    const fullUrl = new URL(req.url, `http://${req.headers.host}`);
-    const escudoUrl = fullUrl.searchParams.get('url');
-
-    if (!escudoUrl || !escudoUrl.startsWith("https://")) {
-      return res.status(400).json({ error: "URL inválida" });
-    }
-
-    const stream = got.stream(escudoUrl);
-    stream.on('response', (response) => {
-      res.setHeader("Content-Type", response.headers['content-type'] || 'image/svg+xml');
-      res.setHeader("Access-Control-Allow-Origin", "*");
-      stream.pipe(res);
-    });
-
-    stream.on('error', (err) => {
-      console.error("Erro no stream:", err.message);
-      res.status(502).json({ error: "Erro ao buscar escudo" });
-    });
-  } catch (err) {
-    console.error("Erro inesperado:", err.message);
-    res.status(500).json({ error: "Erro inesperado" });
+    const response = await fetch(url);
+    const contentType = response.headers.get('content-type');
+    const buffer = await response.arrayBuffer();
+    res.setHeader('Content-Type', contentType);
+    res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate');
+    res.send(Buffer.from(buffer));
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao buscar escudo' });
   }
 }

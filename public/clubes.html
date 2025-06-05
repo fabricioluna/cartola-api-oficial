@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Clubes - Liga Pesqueira Pro</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="menu"></div>
+  <main class="container">
+    <h1>Clubes Participantes</h1>
+    <ul id="clubes-lista" class="clubes-lista"></ul>
+  </main>
+  <script>
+    fetch("header.html").then(res => res.text()).then(data => {
+      document.getElementById("menu").innerHTML = data;
+    });
+
+    fetch("https://cartola-api-oficial.vercel.app/api/times")
+      .then(response => response.json())
+      .then(times => {
+        times.sort((a, b) => b.pontos - a.pontos);
+        const container = document.getElementById("clubes-lista");
+        times.forEach((time, index) => {
+          const item = document.createElement("li");
+          item.innerHTML = `
+            <img src="images/escudopadrao.png" alt="Escudo padrão" style="width: 30px; vertical-align: middle; margin-right: 10px;">
+            <strong>${index + 1}º</strong> - <strong>${time.nome}</strong> — Técnico: ${time.nome_cartola}
+            | Patrimônio: C$ ${time.patrimonio.toFixed(2)}
+            | Última pontuação: ${time.pontos.toFixed(2)}
+          `;
+          container.appendChild(item);
+        });
+      })
+      .catch(error => {
+        document.getElementById("clubes-lista").innerHTML = "<li>Erro ao carregar times.</li>";
+        console.error(error);
+      });
+  </script>
+</body>
+</html>
